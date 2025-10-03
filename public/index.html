@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mrucha Beauty – Login / Signup</title>
+  <style>
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: #faf7f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .auth-box {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      width: 350px;
+      text-align: center;
+    }
+    .auth-box img {
+      width: 120px;
+      height: auto;
+      margin-bottom: 15px;
+    }
+    .auth-box h2 {
+      color: #7b2d00;
+      margin-bottom: 20px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      background: #7b2d00;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .toggle {
+      margin-top: 15px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #7b2d00;
+    }
+    .forgot {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #7b2d00;
+      cursor: pointer;
+    }
+    .hidden { display: none; }
+    #message { margin-top: 10px; font-weight: bold; }
+    #popupOverlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.25);
+      z-index: 9998;
+    }
+    #loginSuccessPopup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      padding: 30px 40px;
+      border-radius: 10px;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.25);
+      z-index: 9999;
+      text-align: center;
+      min-width: 260px;
+      margin: 0;
+    }
+    #loginSuccessPopup h3 { color: #7b2d00; margin: 0 0 10px; }
+  </style>
+</head>
+<body>
+
+<div class="auth-box" id="authBox">
+  <img src="https://mrucha.com/cdn/shop/files/Untitled-1_6c560188-6d9a-4c52-b9d4-4ecab08383c1.png?v=1731255216&width=190" alt="Mrucha Beauty Logo">
+  <h2 id="formTitle">Signup</h2>
+  <form id="authForm">
+    <input type="text" id="name" placeholder="Name" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button type="submit" id="formBtn">Signup</button>
+  </form>
+  <p id="forgotPassword" class="forgot hidden">Forgot Password?</p>
+  <p id="toggleForm" class="toggle">Already have an account? Login</p>
+  <p id="message"></p>
+</div>
+
+<div id="popupOverlay"></div>
+<div id="loginSuccessPopup">
+  <h3>Login Successful!</h3>
+  <p>Welcome back to Mrucha Beauty.</p>
+</div>
+
+<script>
+const API_BASE = "http://localhost:5000"; // your backend URL
+let isSignup = true;
+
+const formTitle = document.getElementById("formTitle");
+const formBtn = document.getElementById("formBtn");
+const nameInput = document.getElementById("name");
+const toggleForm = document.getElementById("toggleForm");
+const message = document.getElementById("message");
+
+// Toggle between login and signup
+toggleForm.addEventListener("click", () => {
+  isSignup = !isSignup;
+  formTitle.innerText = isSignup ? "Signup" : "Login";
+  formBtn.innerText = isSignup ? "Signup" : "Login";
+  nameInput.style.display = isSignup ? "block" : "none";
+  nameInput.required = isSignup;
+  toggleForm.innerText = isSignup
+    ? "Already have an account? Login"
+    : "Don't have an account? Signup";
+  message.innerText = "";
+});
+
+// Handle form submission
+document.getElementById("authForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+  const name = nameInput.value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  if (isSignup) {
+    // Signup
+    try {
+      const res = await fetch(`${API_BASE}/signup`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        message.style.color = "green";
+        message.innerText = "Signup successful! You can now login.";
+      } else {
+        message.style.color = "red";
+        message.innerText = data.message || "Signup failed!";
+      }
+    } catch (err) {
+      console.error(err);
+      message.style.color = "red";
+      message.innerText = "Server error during signup.";
+    }
+  } else {
+    // Login
+    try {
+      const res = await fetch(`${API_BASE}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        // Store user info
+        localStorage.setItem("userId", data.userId || "");
+        localStorage.setItem("userName", data.name || "");
+        localStorage.setItem("userEmail", email);
+
+        document.getElementById("popupOverlay").style.display = "block";
+        document.getElementById("loginSuccessPopup").style.display = "block";
+
+        setTimeout(() => {
+          document.getElementById("popupOverlay").style.display = "none";
+          document.getElementById("loginSuccessPopup").style.display = "none";
+          window.location.href = "home.html"; // redirect after login
+        }, 2000);
+      } else {
+        message.style.color = "red";
+        message.innerText = data.message || "Login failed!";
+      }
+    } catch (err) {
+      console.error(err);
+      message.style.color = "red";
+      message.innerText = "Server error during login.";
+    }
+  }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mrucha Beauty</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Quicksand', sans-serif;
+      background: #faf7f5;
+      color: #333;
+    }
+    .notice-bar {
+      background: #ffdbc5;
+      color: #7b2d00;
+      text-align: center;
+      padding: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      transition: opacity 0.4s ease-in-out;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 20px;
+      background: #fff;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+    }
+    .header h1 {
+      font-size: 20px;
+      margin: 0;
+      color: #7b2d00;
+    }
+    .header-icons {
+      display: flex;
+      gap: 16px;
+    }
+    .header-icons i {
+      font-size: 18px;
+      color: #7b2d00;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .header-icons i:hover {
+      transform: scale(1.2);
+    }
+
+    .side-menu {
+      position: fixed;
+      top: 0;
+      right: -280px;
+      width: 280px;
+      height: 100%;
+      background: #fff;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.15);
+      transition: right 0.3s ease-in-out;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+    }
+    .side-menu.active {
+      right: 0;
+    }
+    .side-menu-header {
+      background: #ffdbc5;
+      color: #7b2d00;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+    }
+    .side-menu ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .side-menu li {
+      padding: 14px 20px;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .side-menu li a {
+      text-decoration: none;
+      color: #7b2d00;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+    .side-menu li a:hover {
+      background: #fff7f0;
+      color: #5a1f00;
+    }
+
+    .banner {
+      max-width: 1000px;
+      margin: 20px auto;
+      overflow: hidden;
+      border-radius: 10px;
+    }
+    .banner img {
+      width: 100%;
+      display: block;
+      transition: opacity 0.4s ease-in-out;
+    }
+
+    .welcome {
+      text-align: center;
+      padding: 20px;
+    }
+    .welcome h2 {
+      margin-top: 0;
+      color: #7b2d00;
+    }
+
+    .search-popup {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+    .search-popup.active {
+      display: flex;
+    }
+    .search-box {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      display: flex;
+      gap: 10px;
+      width: 80%;
+      max-width: 500px;
+    }
+    .search-box input {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      outline: none;
+      font-size: 16px;
+    }
+    .search-box button {
+      padding: 12px 18px;
+      border: none;
+      background: #7b2d00;
+      color: #fff;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .login-container {
+      max-width: 400px;
+      margin: 50px auto;
+      padding: 30px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .login-container h2 {
+      color: #7b2d00;
+      margin-bottom: 20px;
+    }
+    .login-container input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+    }
+    .login-container button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      background: #7b2d00;
+      color: #fff;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="notice-bar" id="noticeBar">Welcome to Mrucha Beauty</div>
+
+  <header class="header">
+    <h1>Mrucha Beauty</h1>
+    <div class="header-icons">
+      <i class="fas fa-bars" id="menuBtn"></i>
+          <a href="index.html"><i class="fas fa-user"></i></a>
+    
+    </div>
+  </header>
+   
+  <nav class="side-menu" id="sideMenu">
+    <div class="side-menu-header">
+      Menu
+      <span id="closeMenu">&times;</span>
+    </div>
+    <ul>
+      <li><a href="home.html">Home <i class="fas fa-chevron-right"></i></a></li>
+      <li><a href="shop.html">Shop <i class="fas fa-chevron-right"></i></a></li>
+      <li><a href="accessories.html">Accessories<i class="fas fa-chevron-right"></i></a></li>
+      <li><a href="aboutus.html">About Us <i class="fas fa-chevron-right"></i></a></li>
+      <li><a href="contact.html">Contact <i class="fas fa-chevron-right"></i></a></li>
+    </ul>
+  </nav>
+
+  <div class="banner">
+    <img id="bannerImage" src="https://mrucha.com/cdn/shop/files/1_Mrucha_Lip_Melts_Website_Banners_Mobile.jpg?v=1754112853&width=1200" alt="Banner">
+  </div>
+
+  <section class="welcome">
+    <h2>Discover Your Glow</h2>
+    <p>Premium beauty products crafted for your skin’s unique needs.</p>
+  </section>
+
+  <div class="search-popup" id="searchPopup">
+    <div class="search-box">
+      <input type="text" placeholder="Search for products...">
+      <button>Search</button>
+    </div>
+  </div>
+
+  <script>
+   
+    const notices = ["Welcome to Mrucha Beauty","Free shipping on orders over ₹500","New Mansoon collection out now!"];
+    let noticeIndex = 0;
+    const noticeBar = document.getElementById("noticeBar");
+    setInterval(() => {
+      noticeBar.style.opacity = 0;
+      setTimeout(() => {
+        noticeIndex = (noticeIndex + 1) % notices.length;
+        noticeBar.textContent = notices[noticeIndex];
+        noticeBar.style.opacity = 1;
+      }, 400);
+    }, 2500);
+
+    const banners = [
+      "https://mrucha.com/cdn/shop/files/1_Mrucha_Lip_Melts_Website_Banners_Mobile.jpg?v=1754112853&width=1200",
+      "https://mrucha.com/cdn/shop/files/3_Mrucha_Lip_Melts_Website_Banners_Mobile.jpg?v=1754112880&width=1200",
+      "https://mrucha.com/cdn/shop/files/4_Mrucha_Lip_Melts_Website_Banners_Mobile.jpg?v=1754112919&width=1200"
+    ];
+    let bannerIndex = 0;
+    const bannerImage = document.getElementById("bannerImage");
+    setInterval(() => {
+      bannerImage.style.opacity = 0;
+      setTimeout(() => {
+        bannerIndex = (bannerIndex + 1) % banners.length;
+        bannerImage.src = banners[bannerIndex];
+        bannerImage.style.opacity = 1;
+      }, 400);
+    }, 3000);
+
+    const sideMenu = document.getElementById("sideMenu");
+    document.getElementById("menuBtn").addEventListener("click", () => {
+      sideMenu.classList.add("active");
+    });
+    document.getElementById("closeMenu").addEventListener("click", () => {
+      sideMenu.classList.remove("active");
+    });
+
+    const searchPopup = document.getElementById("searchPopup");
+    document.getElementById("searchBtn").addEventListener("click", () => {
+      searchPopup.classList.add("active");
+    });
+    searchPopup.addEventListener("click", (e) => {
+      if (e.target === searchPopup) searchPopup.classList.remove("active");
+    });
+  </script>
+</body>
+</html>
